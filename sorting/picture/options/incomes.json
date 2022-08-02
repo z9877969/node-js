@@ -1,0 +1,5 @@
+{
+  "mainPageTitle": "Доходы",
+
+  "categoriesList": [{ "name": "Зарплата" }, { "name": "Аванс" }]
+}

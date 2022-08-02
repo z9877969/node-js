@@ -1,0 +1,9 @@
+{
+  "mainPageTitle": "Расходы",
+
+  "categoriesList": [
+    { "name": "Еда" },
+    { "name": "Машина" },
+    { "name": "Аптека" }
+  ]
+}
