@@ -1,3 +1,3 @@
 // const fn = () => 5
 
-// module.exports = fn
+console.log("global.test :>> ", global.test);
