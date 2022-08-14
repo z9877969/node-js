@@ -21,5 +21,10 @@
   "homepage": "https://github.com/z9877969/node-js#readme",
   "devDependencies": {
     "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "bson-objectid": "^2.0.3",
+    "commander": "^9.4.0",
+    "yargs": "^17.5.1"
   }
 }
