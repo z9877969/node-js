@@ -24,7 +24,7 @@ async function removeContact(contactId) {
   if (contactIdx === -1) return null;
   const removedContact = contacts.splice(contactIdx, 1)[0];
   updateContactsDB(contacts);
-  return removeContact;
+  return removedContact;
 }
 
 async function addContact(name, email, phone) {
