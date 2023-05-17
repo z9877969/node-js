@@ -1,24 +1,7 @@
-const { createError } = require("../helpers");
 const services = require("../services/contactsServices");
-const Joi = require("joi");
-
-const contactSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().required(),
-  phone: Joi.string().required(),
-  favorite: Joi.boolean().required(),
-});
-
-const updatingNameSchema = Joi.object({
-  favorite: Joi.boolean().required(),
-});
 
 const addContact = async (req, res, next) => {
   try {
-    const { error } = contactSchema.validate(req.body);
-    if (error) {
-      throw createError(400, error.message);
-    }
     const newContact = await services.addContact(req.body);
     res.status(201).json(newContact);
   } catch (error) {
@@ -44,8 +27,49 @@ const getContactById = async (req, res, next) => {
     next(error);
   }
 };
+
+const removeContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await services.removeContact(id);
+    res.status(204).json();
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateContact = async (req, res, next) => {
+  try {
+    const {
+      body,
+      params: { id },
+    } = req;
+    const updatedContact = await services.updateContact(id, body);
+    res.json(updatedContact);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateContactStatus = async (req, res, next) => {
+  try {
+    const {
+      params: { id },
+      body,
+    } = req;
+
+    const contact = await services.updateContactStatus(id, body);
+    res.json(contact);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   addContact,
   getContacts,
   getContactById,
+  removeContact,
+  updateContact,
+  updateContactStatus,
 };

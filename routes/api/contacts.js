@@ -1,5 +1,6 @@
 const express = require("express");
 const controlers = require("../../controlers/contactsControlers");
+const contactsValidation = require("../../middlewares/contactsValidation");
 
 const contactsRouter = express.Router();
 
@@ -7,12 +8,20 @@ contactsRouter.get("/", controlers.getContacts);
 
 contactsRouter.get("/:id", controlers.getContactById);
 
-contactsRouter.post("/", controlers.addContact);
+contactsRouter.post("/", contactsValidation.addContact, controlers.addContact);
 
 contactsRouter.delete("/:id", controlers.removeContact);
 
-contactsRouter.put("/:id", controlers.updateContact);
+contactsRouter.put(
+  "/:id",
+  contactsValidation.updateContact,
+  controlers.updateContact
+);
 
-contactsRouter.patch("/:id/favorite", controlers.updateContactStatus);
+contactsRouter.patch(
+  "/:id/favorite",
+  contactsValidation.updateContactStatus,
+  controlers.updateContactStatus
+);
 
 module.exports = contactsRouter;
