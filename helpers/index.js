@@ -1,7 +1,7 @@
 const { createError } = require("./createError");
-const { updateStatusContact } = require("./updateStatusContact");
+const { getUpdatedError } = require("./getUpdatedError");
 
 module.exports = {
   createError,
-  updateStatusContact,
+  getUpdatedError,
 };
