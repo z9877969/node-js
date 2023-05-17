@@ -8,7 +8,7 @@ const contactSchema = Joi.object({
   favorite: Joi.boolean().required(),
 });
 
-const updatingNameSchema = Joi.object({
+const updatingContactStatusSchema = Joi.object({
   favorite: Joi.boolean().required(),
 });
 
@@ -29,7 +29,7 @@ const validateUpdateContactStatus = (req, res, next) => {
     const { body } = req;
     console.log("object", body);
 
-    const { error } = updatingNameSchema.validate(body);
+    const { error } = updatingContactStatusSchema.validate(body);
 
     if (!body || error) {
       throw createError(400, "missing field favorite");
