@@ -24,7 +24,7 @@ const getContactById = async (req, res, next) => {
       user,
       params: { id },
     } = req;
-    const contact = services.getContactById({ id, user });
+    const contact = await services.getContactById({ id, user });
     res.json(contact);
   } catch (error) {
     next(error);
@@ -51,7 +51,7 @@ const updateContact = async (req, res, next) => {
       user,
       params: { id },
     } = req;
-    const updatedContact = await services.updateContact({id, body, user});
+    const updatedContact = await services.updateContact({ id, body, user });
     res.json(updatedContact);
   } catch (error) {
     next(error);

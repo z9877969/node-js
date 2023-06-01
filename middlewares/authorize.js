@@ -13,7 +13,7 @@ const authorize = async (req, res, next) => {
     try {
       const { id } = tokenTools.verify(token);
       const user = await User.findOne({ _id: id });
-      if (!user) {
+      if (!user || !user.token || user.token !== token) {
         throw createError(401, "Not authorized");
       }
       req.user = user;

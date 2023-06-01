@@ -1,6 +1,6 @@
 const services = require("../services/usersServices");
 
-const userRegister = async (req, res, next) => {
+const registerUser = async (req, res, next) => {
   try {
     const user = await services.registerUser(req.body);
     res.status(201).json(user);
@@ -8,16 +8,36 @@ const userRegister = async (req, res, next) => {
     next(error);
   }
 };
-const userLogin = async (req, res, next) => {
+const loginUser = async (req, res, next) => {
   try {
-    const userData = await services.loginUser(req.body);
-    res.json(userData);
+    const user = await services.loginUser(req.body);
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const logoutUser = async (req, res, next) => {
+  try {
+    await services.logoutUser(req.user);
+    res.status(204).json();
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getCurrentUser = async (req, res, next) => {
+  try {
+    const user = await services.getCurrentUser(req.user);
+    res.json(user);
   } catch (error) {
     next(error);
   }
 };
 
 module.exports = {
-  userRegister,
-  userLogin,
+  registerUser,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
 };

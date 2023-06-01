@@ -6,14 +6,14 @@ const registerUser = async (body) => {
   try {
     const user = await User.findOne({ email: body.email });
     if (user) {
-      throw createError(409, "User with such email has already existed");
+      throw createError(409, "Email in use");
     }
     const hashedPassword = await passwordTools.createHash(body.password);
-    const { _id, name, email } = await User.create({
+    const { email, subscription } = await User.create({
       ...body,
       password: hashedPassword,
     });
-    return { _id, name, email };
+    return { user: { email, subscription } };
   } catch (error) {
     throw getUpdatedError(error);
   }
@@ -34,9 +34,28 @@ const loginUser = async (body) => {
     const payload = { id: user._id };
     const token = tokenTools.create(payload, "1h");
     await User.findByIdAndUpdate(user._id, { token });
-    const { _id, email, name } = user;
+    const { email, subscription } = user;
 
-    return { _id, email, name, token };
+    return { token, user: { email, subscription } };
+  } catch (error) {
+    throw getUpdatedError(error);
+  }
+};
+
+const logoutUser = async (user) => {
+  try {
+    const { _id } = user;
+    await User.findByIdAndUpdate(_id, { token: "" });
+    return null;
+  } catch (error) {
+    throw getUpdatedError(error);
+  }
+};
+
+const getCurrentUser = async (user) => {
+  try {
+    const { email, subscription } = user;
+    return { email, subscription };
   } catch (error) {
     throw getUpdatedError(error);
   }
@@ -45,4 +64,6 @@ const loginUser = async (body) => {
 module.exports = {
   registerUser,
   loginUser,
+  logoutUser,
+  getCurrentUser,
 };

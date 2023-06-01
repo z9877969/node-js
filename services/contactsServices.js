@@ -1,6 +1,5 @@
 const { createError, getUpdatedError } = require("../helpers");
 const Contact = require("../models/contact");
-const User = require("../models/user");
 
 const addContact = async (body, user) => {
   try {
@@ -41,7 +40,7 @@ const getContacts = async (user) => {
 const getContactById = async ({ id, user }) => {
   try {
     const { _id: owner } = user;
-    const contact = await Contact.findOne({ id, owner });
+    const contact = await Contact.findOne({ _id: id, owner });
     if (!contact) {
       throw createError(404, "Contact not found");
     }
@@ -77,6 +76,7 @@ const updateContact = async ({ id, body, user }) => {
     if (!updatedContact) {
       throw createError(404, "Contact not found");
     }
+    return updatedContact;
   } catch (error) {
     throw getUpdatedError(error);
   }

@@ -3,23 +3,21 @@ const { regex } = require("../helpers");
 
 const userSchema = Schema(
   {
-    name: {
-      type: "string",
-      //   required: true,
-    },
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
       match: regex.email,
     },
     password: {
       type: String,
-      required: true,
-      // min: [8, "Password must be 8 and more charackters"],
-      // max: [32, "Password must be 32 charackters and less"],
+      required: [true, "Set password for user"],
       minlength: 8,
-      maxlength: 32,
+    },
+    subscription: {
+      type: String,
+      enum: ["starter", "pro", "business"],
+      default: "starter",
     },
     token: {
       type: String,

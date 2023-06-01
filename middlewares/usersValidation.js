@@ -2,9 +2,11 @@ const Joi = require("joi");
 const { createError, regex } = require("../helpers");
 
 const userRegisterSchema = Joi.object({
-  name: Joi.string().min(3).max(32).required(),
   email: Joi.string().pattern(regex.email).required(),
   password: Joi.string().min(8).max(32).required(),
+  subscription: Joi.string()
+    .valid("starter", "pro", "business")
+    .default("starter"),
 });
 
 const userLoginSchema = Joi.object({
