@@ -61,9 +61,24 @@ const getCurrentUser = async (user) => {
   }
 };
 
+const updateSubscription = async ({ user, body }) => {
+  try {
+    const { email, _id, subscription } = await User.findByIdAndUpdate(
+      user._id,
+      body,
+      { new: true }
+    );
+
+    return { email, _id, subscription };
+  } catch (error) {
+    throw getUpdatedError(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   getCurrentUser,
+  updateSubscription,
 };

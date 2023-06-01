@@ -14,6 +14,10 @@ const userLoginSchema = Joi.object({
   password: Joi.string().min(8).max(32).required(),
 });
 
+const userSubscriptionSchema = Joi.object({
+  subscription: Joi.string().valid("starter", "pro", "business").required(),
+});
+
 const validateRegisterUser = async (req, res, next) => {
   const { body } = req;
 
@@ -42,7 +46,20 @@ const validateLoginUser = async (req, res, next) => {
   }
 };
 
+const validateUpdateUserSubscription = async (req, res, next) => {
+  try {
+    const { error } = userSubscriptionSchema.validate(req.body);
+    if (error) {
+      throw createError(400, error.message);
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser: validateRegisterUser,
   loginUser: validateLoginUser,
+  updateUserSubscription: validateUpdateUserSubscription,
 };

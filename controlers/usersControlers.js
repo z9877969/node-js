@@ -35,9 +35,20 @@ const getCurrentUser = async (req, res, next) => {
   }
 };
 
+const updateSubscription = async (req, res, next) => {
+  try {
+    const { user, body } = req;
+    const userData = await services.updateSubscription({ user, body });
+    res.json(userData);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   getCurrentUser,
+  updateSubscription,
 };
