@@ -47,6 +47,16 @@ const filterContactsByFavorite = async ({ user, favorite }) => {
   }
 };
 
+const paginateContacts = async ({ user, limit, page }) => {
+  try {
+    const { _id: owner } = user;
+    const contacts = await Contact.find({ owner }).skip(page).limit(limit);
+    return contacts;
+  } catch (error) {
+    throw getUpdatedError(error);
+  }
+};
+
 const getContactById = async ({ id, user }) => {
   try {
     const { _id: owner } = user;
@@ -100,4 +110,5 @@ module.exports = {
   getContactById,
   removeContact,
   updateContact,
+  paginateContacts,
 };

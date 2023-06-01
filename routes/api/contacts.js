@@ -7,6 +7,7 @@ const contactsRouter = express.Router();
 contactsRouter.get(
   "/",
   controlers.filterContactsByFavorite,
+  controlers.paginateContacts,
   controlers.getContacts
 );
 

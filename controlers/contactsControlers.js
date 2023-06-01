@@ -37,6 +37,23 @@ const filterContactsByFavorite = async (req, res, next) => {
   }
 };
 
+const paginateContacts = async (req, res, next) => {
+  try {
+    const {
+      user,
+      query: { limit, page },
+    } = req;
+    if (limit === undefined || page === undefined) {
+      next();
+    }
+
+    const contacts = await services.paginateContacts({ user, page, limit });
+    res.json(contacts);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getContactById = async (req, res, next) => {
   try {
     const {
@@ -103,4 +120,5 @@ module.exports = {
   removeContact,
   updateContact,
   updateContactStatus,
+  paginateContacts,
 };
