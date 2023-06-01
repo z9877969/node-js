@@ -4,7 +4,11 @@ const contactsValidation = require("../../middlewares/contactsValidation");
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", controlers.getContacts);
+contactsRouter.get(
+  "/",
+  controlers.filterContactsByFavorite,
+  controlers.getContacts
+);
 
 contactsRouter.get("/:id", controlers.getContactById);
 

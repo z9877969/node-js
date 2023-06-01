@@ -18,6 +18,25 @@ const getContacts = async (req, res, next) => {
   }
 };
 
+const filterContactsByFavorite = async (req, res, next) => {
+  try {
+    const {
+      user,
+      query: { favorite },
+    } = req;
+    if (favorite === undefined) {
+      next();
+    }
+    const contacts = await services.filterContactsByFavorite({
+      user,
+      favorite,
+    });
+    res.json(contacts);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getContactById = async (req, res, next) => {
   try {
     const {
@@ -79,6 +98,7 @@ const updateContactStatus = async (req, res, next) => {
 module.exports = {
   addContact,
   getContacts,
+  filterContactsByFavorite,
   getContactById,
   removeContact,
   updateContact,

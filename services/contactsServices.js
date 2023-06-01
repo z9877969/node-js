@@ -37,6 +37,16 @@ const getContacts = async (user) => {
   }
 };
 
+const filterContactsByFavorite = async ({ user, favorite }) => {
+  try {
+    const { _id: owner } = user;
+    const contacts = await Contact.find({ owner, favorite });
+    return contacts;
+  } catch (error) {
+    throw getUpdatedError(error);
+  }
+};
+
 const getContactById = async ({ id, user }) => {
   try {
     const { _id: owner } = user;
@@ -86,6 +96,7 @@ module.exports = {
   addContact,
   updateContactStatus,
   getContacts,
+  filterContactsByFavorite,
   getContactById,
   removeContact,
   updateContact,
