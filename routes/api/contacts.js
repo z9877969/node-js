@@ -4,13 +4,23 @@ const contactsValidation = require("../../middlewares/contactsValidation");
 
 const contactsRouter = express.Router();
 
+// contactsRouter.get(
+//   "/",
+//   contactsValidation.filterByQuery,
+//   controlers.filterContactsByFavorite
+// );
+
+// contactsRouter.get(
+//   "/",
+//   contactsValidation.filterByQuery,
+//   controlers.paginateContacts
+// );
+
 contactsRouter.get(
   "/",
-  contactsValidation.filterByFavorite,
-  controlers.filterContactsByFavorite
+  contactsValidation.filterByQuery,
+  controlers.getContacts
 );
-
-contactsRouter.get("/", controlers.paginateContacts, controlers.getContacts);
 
 contactsRouter.get("/:id", controlers.getContactById);
 

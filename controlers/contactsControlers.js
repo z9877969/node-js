@@ -11,7 +11,26 @@ const addContact = async (req, res, next) => {
 
 const getContacts = async (req, res, next) => {
   try {
-    const contacts = await services.getContacts(req.user);
+    const {
+      user,
+      query: { favorite, limit, page },
+    } = req;
+    if (favorite) {
+      const contacts = await services.filterContactsByFavorite({
+        user,
+        favorite,
+      });
+      res.json(contacts);
+    }
+    if (limit && page) {
+      const contacts = await services.paginateContacts({
+        user,
+        limit,
+        page,
+      });
+      res.json(contacts);
+    }
+    const contacts = await services.getContacts(user);
     res.json(contacts);
   } catch (error) {
     next(error);
@@ -43,15 +62,12 @@ const paginateContacts = async (req, res, next) => {
       user,
       query: { limit, page },
     } = req;
-    console.log("user :>> ", user);
-    console.log("limit :>> ", limit);
-    console.log("page :>> ", page);
-    if (limit === undefined || page === undefined) {
+    if (!limit || !page) {
       next();
     }
 
     const contacts = await services.paginateContacts({ user, page, limit });
-    res.json(contacts);
+    res.json("contacts").status(201);
   } catch (error) {
     next(error);
   }

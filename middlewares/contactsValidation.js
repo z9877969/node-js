@@ -12,8 +12,10 @@ const updatingContactStatusSchema = Joi.object({
   favorite: Joi.boolean().required(),
 });
 
-const filterByFavoriteSchema = Joi.object({
+const filterByQuerySchema = Joi.object({
   favorite: Joi.boolean(),
+  page: Joi.number().min(1),
+  limit: Joi.number().min(1),
 });
 
 const validateAddContact = (req, res, next) => {
@@ -31,7 +33,6 @@ const validateAddContact = (req, res, next) => {
 const validateUpdateContactStatus = (req, res, next) => {
   try {
     const { body } = req;
-    console.log("object", body);
 
     const { error } = updatingContactStatusSchema.validate(body);
 
@@ -44,10 +45,10 @@ const validateUpdateContactStatus = (req, res, next) => {
   }
 };
 
-const validateFilterByFavorite = (req, res, next) => {
+const validateFilterByQuery = (req, res, next) => {
   try {
     const { query } = req;
-    const { error } = filterByFavoriteSchema.validate(query);
+    const { error } = filterByQuerySchema.validate(query);
     if (error) {
       throw createError(400, error.message);
     }
@@ -61,5 +62,5 @@ module.exports = {
   addContact: validateAddContact,
   updateContact: validateAddContact,
   updateContactStatus: validateUpdateContactStatus,
-  filterByFavorite: validateFilterByFavorite,
+  filterByQuery: validateFilterByQuery,
 };
