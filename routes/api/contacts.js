@@ -6,10 +6,11 @@ const contactsRouter = express.Router();
 
 contactsRouter.get(
   "/",
-  controlers.filterContactsByFavorite,
-  controlers.paginateContacts,
-  controlers.getContacts
+  contactsValidation.filterByFavorite,
+  controlers.filterContactsByFavorite
 );
+
+contactsRouter.get("/", controlers.paginateContacts, controlers.getContacts);
 
 contactsRouter.get("/:id", controlers.getContactById);
 

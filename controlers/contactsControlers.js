@@ -24,9 +24,6 @@ const filterContactsByFavorite = async (req, res, next) => {
       user,
       query: { favorite },
     } = req;
-    if (favorite === undefined) {
-      next();
-    }
     const contacts = await services.filterContactsByFavorite({
       user,
       favorite,
@@ -43,6 +40,9 @@ const paginateContacts = async (req, res, next) => {
       user,
       query: { limit, page },
     } = req;
+    console.log("user :>> ", user);
+    console.log("limit :>> ", limit);
+    console.log("page :>> ", page);
     if (limit === undefined || page === undefined) {
       next();
     }
