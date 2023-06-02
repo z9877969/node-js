@@ -67,7 +67,7 @@ const paginateContacts = async (req, res, next) => {
     }
 
     const contacts = await services.paginateContacts({ user, page, limit });
-    res.json("contacts").status(201);
+    res.json(contacts).status(201);
   } catch (error) {
     next(error);
   }
