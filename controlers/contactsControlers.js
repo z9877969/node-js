@@ -24,6 +24,9 @@ const filterContactsByFavorite = async (req, res, next) => {
       user,
       query: { favorite },
     } = req;
+    if (!favorite) {
+      next();
+    }
     const contacts = await services.filterContactsByFavorite({
       user,
       favorite,

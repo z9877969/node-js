@@ -13,7 +13,7 @@ const updatingContactStatusSchema = Joi.object({
 });
 
 const filterByFavoriteSchema = Joi.object({
-  favorite: Joi.boolean().required(),
+  favorite: Joi.boolean(),
 });
 
 const validateAddContact = (req, res, next) => {
