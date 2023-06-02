@@ -1,4 +1,4 @@
-const { createError, createNotAlowedParamsError } = require("../helpers");
+const { createNotAlowedParamsError } = require("../helpers");
 const services = require("../services/contactsServices");
 
 const addContact = async (req, res, next) => {
@@ -13,6 +13,7 @@ const addContact = async (req, res, next) => {
 const getContacts = async (req, res, next) => {
   try {
     const { user } = req;
+
     const contacts = await services.getContacts(user);
     return res.json(contacts);
   } catch (error) {
@@ -26,12 +27,12 @@ const filterContactsByFavorite = async (req, res, next) => {
       user,
       query: { favorite, ...rest },
     } = req;
-    const restParams = Object.keys(rest);
-    if (restParams.length) {
-      throw createNotAlowedParamsError(restParams, "favorite");
-    }
     if (!favorite) {
       return next();
+    }
+    const notAlowedParams = Object.keys(rest);
+    if (notAlowedParams.length) {
+      throw createNotAlowedParamsError(notAlowedParams, "favorite");
     }
     const contacts = await services.filterContactsByFavorite({
       user,
@@ -49,15 +50,18 @@ const paginateContacts = async (req, res, next) => {
       user,
       query: { limit, page, ...rest },
     } = req;
-    const restParams = Object.keys(rest);
-    if (restParams.length) {
-      throw createNotAlowedParamsError(restParams, "limit", "page");
-    }
-    if (!limit || !page) {
+    if (!limit && !page) {
       return next();
     }
-
-    const contacts = await services.paginateContacts({ user, page, limit });
+    const notAlowedParams = Object.keys(rest);
+    if (notAlowedParams.length) {
+      throw createNotAlowedParamsError(notAlowedParams, "limit", "page");
+    }
+    const contacts = await services.paginateContacts({
+      user,
+      page: !page ? 1 : page,
+      limit: !limit ? 5 : limit,
+    });
     res.json(contacts);
   } catch (error) {
     next(error);
