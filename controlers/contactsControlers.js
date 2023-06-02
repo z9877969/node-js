@@ -1,3 +1,4 @@
+const { createError, createNotAlowedParamsError } = require("../helpers");
 const services = require("../services/contactsServices");
 
 const addContact = async (req, res, next) => {
@@ -23,8 +24,12 @@ const filterContactsByFavorite = async (req, res, next) => {
   try {
     const {
       user,
-      query: { favorite },
+      query: { favorite, ...rest },
     } = req;
+    const restParams = Object.keys(rest);
+    if (restParams.length) {
+      throw createNotAlowedParamsError(restParams, "favorite");
+    }
     if (!favorite) {
       return next();
     }
@@ -42,8 +47,12 @@ const paginateContacts = async (req, res, next) => {
   try {
     const {
       user,
-      query: { limit, page },
+      query: { limit, page, ...rest },
     } = req;
+    const restParams = Object.keys(rest);
+    if (restParams.length) {
+      throw createNotAlowedParamsError(restParams, "limit", "page");
+    }
     if (!limit || !page) {
       return next();
     }
