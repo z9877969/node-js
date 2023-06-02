@@ -1,17 +1,23 @@
 const express = require("express");
-const moment = require("moment");
 const fs = require("fs/promises");
 const cors = require("cors");
-
-const productsRouter = require("./routes/api/products");
+const usersRouter = require("./routes/api/users");
 
 const app = express();
 
 app.use(cors());
-app.use("/api/products", productsRouter);
+app.use(express.json());
+app.use(express.static("public"));
+// app.use("/api/products", productsRouter);
+app.use("/users", usersRouter);
 
-app.listen(3000, () => {
-  console.log("=======================");
-  console.log("SERVER RUN ON PORT:3000");
-  console.log("=======================");
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
 });
+
+app.use(async (err, req, res, next) => {
+  const { message, status = 500 } = err;
+  res.status(status).json({ message });
+});
+
+module.exports = app;

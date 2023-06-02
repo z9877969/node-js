@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      img {
+        display: block;
+        width: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="" alt="" />
+    <script>
+      const baseUrl = "http://localhost:4040";
+      const img = document.querySelector("img");
+      fetch(baseUrl + "/users/1685744235784")
+        .then((res) => res.json())
+        .then((user) => {
+          console.log(user);
+          img.setAttribute("src", baseUrl + "/" + user.avatarURL);
+        });
+    </script>
+  </body>
+</html>
