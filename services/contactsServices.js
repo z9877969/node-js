@@ -1,18 +1,20 @@
 const { createError, getUpdatedError } = require("../helpers");
 const Contact = require("../models/contact");
 
-const addContact = async (body) => {
+const addContact = async (body, user) => {
   try {
-    const contact = await Contact.create(body);
+    const { _id: owner } = user;
+    const contact = await Contact.create({ ...body, owner });
     return contact;
   } catch (error) {
     throw getUpdatedError(error);
   }
 };
 
-const updateContactStatus = async (id, body) => {
+const updateContactStatus = async ({ id, body, user }) => {
   try {
-    const contact = await Contact.findByIdAndUpdate(id, body, {
+    const { _id: owner } = user;
+    const contact = await Contact.findOneAndUpdate({ _id: id, owner }, body, {
       new: true,
     });
     if (!contact) {
@@ -24,18 +26,44 @@ const updateContactStatus = async (id, body) => {
   }
 };
 
-const getContacts = async () => {
+const getContacts = async (user) => {
   try {
-    const contacts = await Contact.find(null, "-createdAt -updatedAt");
+    const { _id: owner } = user;
+    const contacts = await Contact.find({ owner }, "-createdAt -updatedAt");
+    // .populate("owner", "_id name email");
     return contacts;
   } catch (error) {
     throw getUpdatedError(error);
   }
 };
 
-const getContactById = async (id) => {
+const filterContactsByFavorite = async ({ user, favorite }) => {
   try {
-    const contact = await Contact.findById(id);
+    const { _id: owner } = user;
+    const contacts = await Contact.find({ owner, favorite });
+    return contacts;
+  } catch (error) {
+    throw getUpdatedError(error);
+  }
+};
+
+const paginateContacts = async ({ user, limit, page }) => {
+  try {
+    const { _id: owner } = user;
+    const contacts = await Contact.find({ owner })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+    return contacts;
+  } catch (error) {
+    throw getUpdatedError(error);
+  }
+};
+
+const getContactById = async ({ id, user }) => {
+  try {
+    const { _id: owner } = user;
+    const contact = await Contact.findOne({ _id: id, owner });
     if (!contact) {
       throw createError(404, "Contact not found");
     }
@@ -45,9 +73,10 @@ const getContactById = async (id) => {
   }
 };
 
-const removeContact = async (id) => {
+const removeContact = async ({ id, user }) => {
   try {
-    const removedContact = await Contact.findByIdAndRemove(id);
+    const { _id: owner } = user;
+    const removedContact = await Contact.findOneAndRemove({ _id: id, owner });
     if (!removedContact) {
       throw createError(404, "Contact not found");
     }
@@ -57,14 +86,20 @@ const removeContact = async (id) => {
   }
 };
 
-const updateContact = async (id, body) => {
+const updateContact = async ({ id, body, user }) => {
   try {
-    const updatedContact = await Contact.findByIdAndUpdate(id, body, {
-      new: true,
-    });
+    const { _id: owner } = user;
+    const updatedContact = await Contact.findOneAndUpdate(
+      { _id: id, owner },
+      body,
+      {
+        new: true,
+      }
+    );
     if (!updatedContact) {
       throw createError(404, "Contact not found");
     }
+    return updatedContact;
   } catch (error) {
     throw getUpdatedError(error);
   }
@@ -74,7 +109,9 @@ module.exports = {
   addContact,
   updateContactStatus,
   getContacts,
+  filterContactsByFavorite,
   getContactById,
   removeContact,
   updateContact,
+  paginateContacts,
 };
