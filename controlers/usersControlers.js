@@ -8,6 +8,7 @@ const registerUser = async (req, res, next) => {
     next(error);
   }
 };
+
 const loginUser = async (req, res, next) => {
   try {
     const user = await services.loginUser(req.body);
@@ -45,10 +46,21 @@ const updateSubscription = async (req, res, next) => {
   }
 };
 
+const updateAvatar = async (req, res, next) => {
+  try {
+    const { user, file } = req;
+    const userData = await services.updateAvatar({ user, file });
+    res.json(userData);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   getCurrentUser,
   updateSubscription,
+  updateAvatar,
 };

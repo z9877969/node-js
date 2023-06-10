@@ -1,7 +1,10 @@
 const express = require("express");
 const controlers = require("../../controlers/usersControlers");
-const { authorize } = require("../../middlewares/authorize");
-const validation = require("../../middlewares/usersValidation");
+const {
+  authorize,
+  multerUpload,
+  usersValidation: validation,
+} = require("../../middlewares");
 
 const usersRouter = express.Router();
 
@@ -14,6 +17,13 @@ usersRouter.patch(
   authorize,
   validation.updateUserSubscription,
   controlers.updateSubscription
+);
+usersRouter.patch(
+  "/avatars",
+  authorize,
+  multerUpload.single("avatarURL"),
+  validation.updateUserAvatarFile,
+  controlers.updateAvatar
 );
 
 module.exports = usersRouter;
