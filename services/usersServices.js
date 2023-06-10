@@ -6,6 +6,9 @@ const { createError, getUpdatedError, fileTools } = require("../helpers");
 const User = require("../models/user");
 const { passwordTools, tokenTools } = require("../helpers");
 
+// console.log("fs :>> ", fs);
+const tmpDir = path.join(__dirname, "../", "tmp");
+
 const registerUser = async (body) => {
   try {
     const user = await User.findOne({ email: body.email });
@@ -105,17 +108,11 @@ const updateAvatar = async ({ user, file }) => {
         .quality(60) // set JPEG quality
         .write(avatarDir); // save
     });
-    await fs.unlink(tmpDir, (err) => {
-      if (err)
-        throw createError(
-          400,
-          "Avatar has replaced but TmpDir has not cleared"
-        );
-      console.log("Avatar has replaced and TmpDir has cleared");
-    });
+    await fs.rm(tmpDir);
 
     return { avatarURL: newAvatar.avatarURL };
   } catch (error) {
+    await fs.rm(tmpDir);
     throw getUpdatedError(error);
   }
 };
