@@ -4,6 +4,7 @@ const regex = require("./regex");
 const passwordTools = require("./passwordTools");
 const tokenTools = require("./tokenTools");
 const { createNotAlowedParamsError } = require("./createNotAlowedParamsError");
+const fileTools = require("./fileTools");
 
 module.exports = {
   createError,
@@ -12,4 +13,5 @@ module.exports = {
   passwordTools,
   tokenTools,
   createNotAlowedParamsError,
+  fileTools,
 };

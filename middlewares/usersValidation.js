@@ -58,8 +58,20 @@ const validateUpdateUserSubscription = async (req, res, next) => {
   }
 };
 
+const validateUpdateUserAvatarFile = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      throw createError(400, "avatarURL must be file");
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser: validateRegisterUser,
   loginUser: validateLoginUser,
   updateUserSubscription: validateUpdateUserSubscription,
+  updateUserAvatarFile: validateUpdateUserAvatarFile,
 };

@@ -1,6 +1,13 @@
-const { createError, getUpdatedError } = require("../helpers");
+const gravatar = require("gravatar");
+const path = require("path");
+const fs = require("fs/promises");
+const Jimp = require("jimp");
+const { createError, getUpdatedError, fileTools } = require("../helpers");
 const User = require("../models/user");
 const { passwordTools, tokenTools } = require("../helpers");
+
+// console.log("fs :>> ", fs);
+const tmpDir = path.join(__dirname, "../", "tmp");
 
 const registerUser = async (body) => {
   try {
@@ -9,8 +16,10 @@ const registerUser = async (body) => {
       throw createError(409, "Email in use");
     }
     const hashedPassword = await passwordTools.createHash(body.password);
+    const avatarURL = gravatar.url(body.email, { protocol: "https" });
     const { email, subscription } = await User.create({
       ...body,
+      avatarURL,
       password: hashedPassword,
     });
     return { user: { email, subscription } };
@@ -75,10 +84,44 @@ const updateSubscription = async ({ user, body }) => {
   }
 };
 
+const updateAvatar = async ({ user, file }) => {
+  try {
+    const { originalname, path: tmpDir } = file;
+    const fileName = fileTools.createName(originalname, user._id);
+
+    const body = { avatarURL: path.join("/avatars", fileName) };
+    const newAvatar = await User.findByIdAndUpdate(user._id, body, {
+      new: true,
+    });
+    const avatarDir = path.join(
+      __dirname,
+      "../",
+      "public",
+      "avatars",
+      fileName
+    );
+
+    Jimp.read(tmpDir, (err, avatar) => {
+      if (err) throw err;
+      avatar
+        .resize(250, 250) // resize
+        .quality(60) // set JPEG quality
+        .write(avatarDir); // save
+    });
+    await fs.rm(tmpDir);
+
+    return { avatarURL: newAvatar.avatarURL };
+  } catch (error) {
+    await fs.rm(tmpDir);
+    throw getUpdatedError(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   getCurrentUser,
   updateSubscription,
+  updateAvatar,
 };
