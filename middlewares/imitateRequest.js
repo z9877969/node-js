@@ -1,8 +1,12 @@
 const imitateRequest = (delay) => (req, res, next) => {
-  const timeoutId = setTimeout(() => {
+  if (!delay) {
     next();
-    clearTimeout(timeoutId);
-  }, delay);
+  } else {
+    const timeoutId = setTimeout(() => {
+      next();
+      clearTimeout(timeoutId);
+    }, delay);
+  }
 };
 
 module.exports = imitateRequest;

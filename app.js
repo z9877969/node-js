@@ -17,7 +17,7 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.static('public'));
 app.use(express.json());
-app.use(imitateRequest(500));
+app.use(imitateRequest(0));
 
 app.use('/api/auth', usersRouter);
 app.use('/api/todo', authorize, contactsRouter);
