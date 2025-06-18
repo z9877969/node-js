@@ -21,6 +21,13 @@ app.use(imitateRequest(500));
 
 app.use('/api/auth', usersRouter);
 app.use('/api/todo', authorize, contactsRouter);
+app.use('/api/ping', (req, res, next) => {
+  try {
+    res.json('iam ok');
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });
