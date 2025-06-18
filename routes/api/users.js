@@ -10,7 +10,7 @@ const usersRouter = express.Router();
 
 usersRouter.post("/register", validation.registerUser, controlers.registerUser);
 usersRouter.post("/login", validation.loginUser, controlers.loginUser);
-usersRouter.get("/logout", authorize, controlers.logoutUser);
+usersRouter.post("/logout", authorize, controlers.logoutUser);
 usersRouter.get("/current", authorize, controlers.getCurrentUser);
 usersRouter.patch(
   "/subscription",

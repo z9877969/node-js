@@ -1,28 +1,27 @@
-const gravatar = require("gravatar");
-const path = require("path");
-const fs = require("fs/promises");
-const Jimp = require("jimp");
-const { createError, getUpdatedError, fileTools } = require("../helpers");
-const User = require("../models/user");
-const { passwordTools, tokenTools } = require("../helpers");
+const gravatar = require('gravatar');
+const path = require('path');
+const fs = require('fs/promises');
+const Jimp = require('jimp');
+const { createError, getUpdatedError, fileTools } = require('../helpers');
+const User = require('../models/user');
+const { passwordTools, tokenTools } = require('../helpers');
 
-// console.log("fs :>> ", fs);
-const tmpDir = path.join(__dirname, "../", "tmp");
+const tmpDir = path.join(__dirname, '../', 'tmp');
 
 const registerUser = async (body) => {
   try {
     const user = await User.findOne({ email: body.email });
     if (user) {
-      throw createError(409, "Email in use");
+      throw createError(409, 'Email in use');
     }
     const hashedPassword = await passwordTools.createHash(body.password);
-    const avatarURL = gravatar.url(body.email, { protocol: "https" });
-    const { email, subscription } = await User.create({
+    const avatarURL = gravatar.url(body.email, { protocol: 'https' });
+    const { email, _id } = await User.create({
       ...body,
       avatarURL,
       password: hashedPassword,
     });
-    return { user: { email, subscription } };
+    return { user: { email, _id } };
   } catch (error) {
     throw getUpdatedError(error);
   }
@@ -37,15 +36,15 @@ const loginUser = async (body) => {
       : false;
 
     if (!user || !isPasswordCompare) {
-      throw createError(401, "Email or password is wrong");
+      throw createError(401, 'Email or password is wrong');
     }
 
     const payload = { id: user._id };
-    const token = tokenTools.create(payload, "1h");
+    const token = tokenTools.create(payload, '3h');
     await User.findByIdAndUpdate(user._id, { token });
-    const { email, subscription } = user;
+    const { email, avatarURL } = user;
 
-    return { token, user: { email, subscription } };
+    return { token, user: { email, avatarURL } };
   } catch (error) {
     throw getUpdatedError(error);
   }
@@ -54,7 +53,7 @@ const loginUser = async (body) => {
 const logoutUser = async (user) => {
   try {
     const { _id } = user;
-    await User.findByIdAndUpdate(_id, { token: "" });
+    await User.findByIdAndUpdate(_id, { token: '' });
     return null;
   } catch (error) {
     throw getUpdatedError(error);
@@ -63,8 +62,8 @@ const logoutUser = async (user) => {
 
 const getCurrentUser = async (user) => {
   try {
-    const { email, subscription } = user;
-    return { email, subscription };
+    const { email, avatarURL } = user;
+    return { email, avatarURL };
   } catch (error) {
     throw getUpdatedError(error);
   }
@@ -89,15 +88,15 @@ const updateAvatar = async ({ user, file }) => {
     const { originalname, path: tmpDir } = file;
     const fileName = fileTools.createName(originalname, user._id);
 
-    const body = { avatarURL: path.join("/avatars", fileName) };
+    const body = { avatarURL: path.join('/avatars', fileName) };
     const newAvatar = await User.findByIdAndUpdate(user._id, body, {
       new: true,
     });
     const avatarDir = path.join(
       __dirname,
-      "../",
-      "public",
-      "avatars",
+      '../',
+      'public',
+      'avatars',
       fileName
     );
 

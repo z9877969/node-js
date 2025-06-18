@@ -1,15 +1,24 @@
-const Joi = require("joi");
-const { createError } = require("../helpers");
+const Joi = require('joi');
+const { createError, validateBody } = require('../helpers');
 
 const contactSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().required(),
-  phone: Joi.string().required(),
-  favorite: Joi.boolean(),
+  date: Joi.string().required(),
+  descr: Joi.string().required(),
+  priority: Joi.string().valid('low', 'medium', 'high'),
+  theme: Joi.string().valid('green', 'red', 'orange'),
+  isDone: Joi.boolean(),
+});
+
+const updatingContactSchema = Joi.object({
+  date: Joi.string(),
+  descr: Joi.string(),
+  priority: Joi.string().valid('low', 'medium', 'high'),
+  theme: Joi.string().valid('green', 'red', 'orange'),
+  isDone: Joi.boolean(),
 });
 
 const updatingContactStatusSchema = Joi.object({
-  favorite: Joi.boolean().required(),
+  isDone: Joi.boolean().required(),
 });
 
 const filterByQuerySchema = Joi.object({
@@ -18,32 +27,9 @@ const filterByQuerySchema = Joi.object({
   limit: Joi.number().min(1),
 });
 
-const validateAddContact = (req, res, next) => {
-  try {
-    const { error } = contactSchema.validate(req.body);
-    if (error) {
-      throw createError(400, error.message);
-    }
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
-
-const validateUpdateContactStatus = (req, res, next) => {
-  try {
-    const { body } = req;
-
-    const { error } = updatingContactStatusSchema.validate(body);
-
-    if (!body || error) {
-      throw createError(400, "missing field favorite");
-    }
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
+const validateAddContact = validateBody(contactSchema);
+const validateUpdateContactStatus = validateBody(updatingContactStatusSchema);
+const validateContactUpdating = validateBody(updatingContactSchema);
 
 const validateFilterByQuery = (req, res, next) => {
   try {
@@ -60,7 +46,7 @@ const validateFilterByQuery = (req, res, next) => {
 
 module.exports = {
   addContact: validateAddContact,
-  updateContact: validateAddContact,
   updateContactStatus: validateUpdateContactStatus,
   filterByQuery: validateFilterByQuery,
+  updateContact: validateContactUpdating,
 };

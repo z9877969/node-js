@@ -18,14 +18,14 @@ contactsRouter.post("/", contactsValidation.addContact, controlers.addContact);
 
 contactsRouter.delete("/:id", controlers.removeContact);
 
-contactsRouter.put(
+contactsRouter.patch(
   "/:id",
   contactsValidation.updateContact,
   controlers.updateContact
 );
 
 contactsRouter.patch(
-  "/:id/favorite",
+  "/:id/status",
   contactsValidation.updateContactStatus,
   controlers.updateContactStatus
 );
