@@ -1,4 +1,5 @@
 const { authorize } = require('./authorize');
+const { checkRefreshToken } = require('./checkRefreshToken');
 const contactsValidation = require('./contactsValidation');
 const usersValidation = require('./usersValidation');
 const multerUpload = require('./multerUpload');
@@ -10,4 +11,5 @@ module.exports = {
   usersValidation,
   multerUpload,
   imitateRequest,
+  checkRefreshToken,
 };

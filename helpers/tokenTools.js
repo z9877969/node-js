@@ -1,17 +1,24 @@
-const jwt = require("jsonwebtoken");
-const { createError } = require("./createError");
+const jwt = require('jsonwebtoken');
+const { createError } = require('./createError');
 
-const { SECRET_KEY } = process.env;
+const { SECRET_KEY, REFRESH_TOKEN_SECRET } = process.env;
 
-const create = (payload, time) => {
-  return jwt.sign(payload, SECRET_KEY, { expiresIn: time });
+const create = (payload, time, tokenType = 'access') => {
+  return jwt.sign(
+    payload,
+    tokenType === 'access' ? SECRET_KEY : REFRESH_TOKEN_SECRET,
+    { expiresIn: time }
+  );
 };
 
-const verify = (token) => {
+const verify = (token, tokenType = 'access') => {
   try {
-    return jwt.verify(token, SECRET_KEY);
+    return jwt.verify(
+      token,
+      tokenType === 'access' ? SECRET_KEY : REFRESH_TOKEN_SECRET
+    );
   } catch (error) {
-    throw createError(401, "Not authorized");
+    throw createError(401, 'Not authorized');
   }
 };
 

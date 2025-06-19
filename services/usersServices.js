@@ -41,13 +41,25 @@ const loginUser = async (body) => {
 
     const payload = { id: user._id };
     const token = tokenTools.create(payload, '3h');
-    await User.findByIdAndUpdate(user._id, { token });
+    const refreshToken = tokenTools.create(payload, '1d', 'refresh');
+
+    await User.findByIdAndUpdate(user._id, { token, refreshToken });
     const { email, avatarURL } = user;
 
-    return { token, user: { email, avatarURL } };
+    return { token, refreshToken, user: { email, avatarURL } };
   } catch (error) {
     throw getUpdatedError(error);
   }
+};
+
+const refreshToken = async (userId) => {
+  const payload = { id: userId };
+  const token = tokenTools.create(payload, '3h');
+  const refreshToken = tokenTools.create(payload, '1d', 'refresh');
+
+  await User.findByIdAndUpdate(userId, { token, refreshToken });
+
+  return { token, refreshToken };
 };
 
 const logoutUser = async (user) => {
@@ -123,4 +135,5 @@ module.exports = {
   getCurrentUser,
   updateSubscription,
   updateAvatar,
+  refreshToken
 };

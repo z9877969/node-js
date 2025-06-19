@@ -1,4 +1,4 @@
-const services = require("../services/usersServices");
+const services = require('../services/usersServices');
 
 const registerUser = async (req, res, next) => {
   try {
@@ -13,6 +13,15 @@ const loginUser = async (req, res, next) => {
   try {
     const user = await services.loginUser(req.body);
     res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const refreshToken = async (req, res, next) => {
+  try {
+    const tokens = await services.refreshToken(req.user._id);
+    res.json(tokens);
   } catch (error) {
     next(error);
   }
@@ -63,4 +72,5 @@ module.exports = {
   getCurrentUser,
   updateSubscription,
   updateAvatar,
+  refreshToken
 };
